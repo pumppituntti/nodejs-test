@@ -1,8 +1,13 @@
 const express = require("express");
 const app = express();
+const mysql = require("mysql");
+
+const port = process.env.PORT || 8080;
+
 var cors = require("cors");
 app.use(cors());
-const port = process.env.PORT || 8080;
+
+const db = [{ name: "tiina" }, { name: "jack" }];
 
 let config = {
   host: "mydb.tamk.fi",
@@ -21,6 +26,10 @@ app.get("/", (req, res) => {
       res.send(results);
     }
   });
+});
+
+app.get("/names", (req, res) => {
+  res.send(db);
 });
 
 const server = app.listen(port, () => {
