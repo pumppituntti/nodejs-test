@@ -1,27 +1,34 @@
 const express = require("express");
-const connection = require("./connection.js");
-const locations = require("./locations.js");
 const app = express();
-
-const cors = require("cors");
-
+var cors = require("cors");
+app.use(cors());
 const port = process.env.PORT || 8080;
 
-app.use(cors());
-
-app.use("/locations", locations);
-
-const shutdown = () => {
-  console.log("Closing HTTP server");
-  server.close(() => {
-    console.log("Server closed");
-  });
+let config = {
+  host: "mydb.tamk.fi",
+  user: process.env.user,
+  password: process.env.password,
+  database: process.env.database,
+  connectionLimit: 10,
 };
 
-process.on("SIGINT", shutdown);
-process.on("SIGTERM", shutdown);
+var pool = mysql.createPool(config);
+app.get("/", (req, res) => {
+  pool.query("SELECT * from locations", (error, results) => {
+    if (error) {
+      console.log(error);
+    } else {
+      res.send(results);
+    }
+  });
+});
+
+const db = [{ name: "tiina" }, { name: "jack" }];
+
+app.get("/names", (req, res) => {
+  res.send(db);
+});
 
 const server = app.listen(port, () => {
-  connection.connect();
   console.log(`Listening on port ${server.address().port}`);
 });
