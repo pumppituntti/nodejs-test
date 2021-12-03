@@ -7,15 +7,14 @@ const cors = require("cors");
 
 const port = process.env.PORT || 8080;
 
+app.use(cors());
+
 app.use("/locations", locations);
 
 const shutdown = () => {
   console.log("Closing HTTP server");
   server.close(() => {
     console.log("Server closed");
-    connection.close(() => {
-      process.exit(0);
-    });
   });
 };
 
